@@ -322,19 +322,27 @@ fileprivate extension AES {
         var rk2: Array<Array<UInt32>> = expandKey(key, variant: variant)
 
         for r in 1 ..< rounds {
-            var w: UInt32
-
+            var w,x,y: UInt32
+            
             w = rk2[r][0]
-            rk2[r][0] = U1[Int(B0(w))] ^ U2[Int(B1(w))] ^ U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            x = U1[Int(B0(w))] ^ U2[Int(B1(w))]
+            y = U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            rk2[r][0] = x ^ y
 
             w = rk2[r][1]
-            rk2[r][1] = U1[Int(B0(w))] ^ U2[Int(B1(w))] ^ U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            x = U1[Int(B0(w))] ^ U2[Int(B1(w))]
+            y = U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            rk2[r][1] = x ^ y
 
             w = rk2[r][2]
-            rk2[r][2] = U1[Int(B0(w))] ^ U2[Int(B1(w))] ^ U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            x = U1[Int(B0(w))] ^ U2[Int(B1(w))]
+            y = U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            rk2[r][2] = x ^ y
 
             w = rk2[r][3]
-            rk2[r][3] = U1[Int(B0(w))] ^ U2[Int(B1(w))] ^ U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            x = U1[Int(B0(w))] ^ U2[Int(B1(w))]
+            y = U3[Int(B2(w))] ^ U4[Int(B3(w))]
+            rk2[r][3] = x ^ y
         }
 
         return rk2
@@ -422,7 +430,7 @@ fileprivate extension AES {
         var p: UInt8 = 1, q: UInt8 = 1
 
         repeat {
-            p = p ^ (UInt8(extendingOrTruncating: Int(p) << 1) ^ ((p & 0x80) == 0x80 ? 0x1B : 0))
+            p = p ^ (UInt8(truncatingIfNeeded: Int(p) << 1) ^ ((p & 0x80) == 0x80 ? 0x1B : 0))
             q ^= q << 1
             q ^= q << 2
             q ^= q << 4
